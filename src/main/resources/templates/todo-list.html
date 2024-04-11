@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo List</title>
+</head>
+<body>
+
+<h2>Todo List</h2>
+<div>
+    <!-- Display Todos -->
+    <ul>
+        <li th:each="todo : ${todos}">
+            <span th:text="${todo.text}">Todo Text</span>
+            <input type="checkbox" th:checked="${todo.done}"/>
+            <!-- Edit Link -->
+            <a href="#" th:onclick="'javascript:editTodo('+${todo.id}+');'">Edit</a>
+        </li>
+    </ul>
+</div>
+
+<div>
+    <h3>Add a new todo</h3>
+    <form id="addForm" th:action="@{/todos}" th:object="${todo}" method="post">
+        <input type="text" name="text" placeholder="Enter todo here" th:field="*{text}" />
+        <input type="submit" value="Submit">
+    </form>
+</div>
+
+<div id="editForm" style="display:none;">
+    <h3>Edit Todo</h3>
+    <form th:action="@{/}" method="post">
+        <input type="hidden" id="editId" name="id" />
+        <input type="text" id="editText" name="text" placeholder="Enter todo here" />
+        <input type="checkbox" id="editDone" name="done" />
+        <button type="button" onclick="submitEditForm()">Update Todo</button>
+    </form>
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    function editTodo(id) {
+        // Find todo by id in todos variable passed by the server
+        var todo = ${todos}.find(todo => todo.id === id);
+        document.getElementById('editId').value = todo.id;
+        document.getElementById('editText').value = todo.text;
+        document.getElementById('editDone').checked = todo.done;
+        document.getElementById('editForm').style.display = 'block';
+    }
+
+    function submitAddForm() {
+        document.getElementById('addForm').submit();
+    }
+
+    function submitEditForm() {
+        document.getElementById('editForm').submit();
+    }
+    /*]]>*/
+</script>
+
+</body>
+</html>
